@@ -20,7 +20,7 @@ import "../libraries/AppStorage.sol";
 contract ActivatorFacet is Initializable, ReentrancyGuardUpgradeable {
     AppStorage s;
 
-    struct UpgradeActivatorAccount {
+    struct UpdateActivatorAccount {
         // The owner address whose account will be modified
         address user;
         // The amount to change the account's unexchanged balance by
@@ -77,7 +77,7 @@ contract ActivatorFacet is Initializable, ReentrancyGuardUpgradeable {
 
     function depositSynthetic(uint256 amount) external nonReentrant {
         _updateAccount(
-            UpgradeActivatorAccount({
+            UpdateActivatorAccount({
                 user: msg.sender,
                 unexchangedBalance: SafeCast.toInt256(amount),
                 exchangedBalance: 0
@@ -94,7 +94,7 @@ contract ActivatorFacet is Initializable, ReentrancyGuardUpgradeable {
 
     function withdrawSynthetic(uint256 amount) external nonReentrant {
         _updateAccount(
-            UpgradeActivatorAccount({
+            UpdateActivatorAccount({
                 user: msg.sender,
                 unexchangedBalance: -SafeCast.toInt256(amount),
                 exchangedBalance: 0
@@ -110,7 +110,7 @@ contract ActivatorFacet is Initializable, ReentrancyGuardUpgradeable {
 
     function claimUnderlying(uint256 amount) external nonReentrant {
         _updateAccount(
-            UpgradeActivatorAccount({
+            UpdateActivatorAccount({
                 user: msg.sender,
                 unexchangedBalance: -SafeCast.toInt256(amount),
                 exchangedBalance: SafeCast.toInt256(amount)
@@ -125,7 +125,7 @@ contract ActivatorFacet is Initializable, ReentrancyGuardUpgradeable {
         );
     }
 
-    function _updateAccount(UpgradeActivatorAccount memory param) internal {
+    function _updateAccount(UpdateActivatorAccount memory param) internal {
         ActivatorAccount storage _account = s.accounts[param.user];
         int256 updateUnexchange = int256(_account.unexchangedBalance) +
             param.unexchangedBalance;
